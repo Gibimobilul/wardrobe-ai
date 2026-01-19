@@ -1,0 +1,3 @@
+# WardrobeAgent specific ignores
+WardrobeAgent/.venv/
+wardrobeAiBackend/.idea/

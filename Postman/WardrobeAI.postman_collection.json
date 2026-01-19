@@ -1,0 +1,348 @@
+{
+  "info": {
+    "_postman_id": "8df63efe-a93f-44e5-b6ff-6e780305b25d",
+    "name": "WardrobeAI collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "51642630",
+    "_collection_link": "https://go.postman.co/collection/51642630-8df63efe-a93f-44e5-b6ff-6e780305b25d?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "api",
+      "item": [
+        {
+          "name": "wardrobe",
+          "item": [
+            {
+              "name": "add",
+              "item": [
+                {
+                  "name": "Add a clothing item",
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Accept",
+                        "value": "*/*"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"id\": \"string\",\n  \"itemName\": \"string\",\n  \"category\": \"string\",\n  \"description\": \"string\",\n  \"descriptionVector\": [\n    3321.306934116679,\n    1824.5990693957403\n  ]\n}",
+                      "options": {
+                        "raw": {
+                          "headerFamily": "json",
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/api/wardrobe/add",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "wardrobe",
+                        "add"
+                      ]
+                    },
+                    "description": "Adds a new clothing item to the wardrobe."
+                  },
+                  "response": [
+                    {
+                      "name": "OK",
+                      "originalRequest": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Accept",
+                            "value": "*/*"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"id\": \"string\",\n  \"itemName\": \"string\",\n  \"category\": \"string\",\n  \"description\": \"string\",\n  \"descriptionVector\": [\n    3321.306934116679,\n    1824.5990693957403\n  ]\n}",
+                          "options": {
+                            "raw": {
+                              "headerFamily": "json",
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/api/wardrobe/add",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "api",
+                            "wardrobe",
+                            "add"
+                          ]
+                        }
+                      },
+                      "status": "OK",
+                      "code": 200,
+                      "_postman_previewlanguage": "text",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "*/*"
+                        }
+                      ],
+                      "cookie": [],
+                      "body": "{\n  \"id\": \"string\",\n  \"itemName\": \"string\",\n  \"category\": \"string\",\n  \"description\": \"string\",\n  \"descriptionVector\": [\n    3321.306934116679,\n    1824.5990693957403\n  ]\n}"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "search",
+              "item": [
+                {
+                  "name": "Search for clothing",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "*/*"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/wardrobe/search?query=string",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "wardrobe",
+                        "search"
+                      ],
+                      "query": [
+                        {
+                          "key": "query",
+                          "value": "string",
+                          "description": "Description of the clothing needed"
+                        }
+                      ]
+                    },
+                    "description": "Finds items in the wardrobe based on a search term like 'formal' or 'summer'."
+                  },
+                  "response": [
+                    {
+                      "name": "OK",
+                      "originalRequest": {
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "*/*"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/api/wardrobe/search?query=string",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "api",
+                            "wardrobe",
+                            "search"
+                          ],
+                          "query": [
+                            {
+                              "description": "Description of the clothing needed",
+                              "key": "query",
+                              "value": "string"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "OK",
+                      "code": 200,
+                      "_postman_previewlanguage": "text",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "*/*"
+                        }
+                      ],
+                      "cookie": [],
+                      "body": "[\n  {\n    \"id\": \"string\",\n    \"itemName\": \"string\",\n    \"category\": \"string\",\n    \"description\": \"string\",\n    \"descriptionVector\": [\n      1951.2445210445062,\n      2222.1586847564836\n    ]\n  },\n  {\n    \"id\": \"string\",\n    \"itemName\": \"string\",\n    \"category\": \"string\",\n    \"description\": \"string\",\n    \"descriptionVector\": [\n      1013.1651055765789,\n      8993.234533085495\n    ]\n  }\n]"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "all",
+              "item": [
+                {
+                  "name": "Get all items",
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "*/*"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/wardrobe/all",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "wardrobe",
+                        "all"
+                      ]
+                    },
+                    "description": "Retrieves all clothing items in the wardrobe."
+                  },
+                  "response": [
+                    {
+                      "name": "OK",
+                      "originalRequest": {
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "*/*"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/api/wardrobe/all",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "api",
+                            "wardrobe",
+                            "all"
+                          ]
+                        }
+                      },
+                      "status": "OK",
+                      "code": 200,
+                      "_postman_previewlanguage": "text",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "*/*"
+                        }
+                      ],
+                      "cookie": [],
+                      "body": "[\n  {\n    \"id\": \"string\",\n    \"itemName\": \"string\",\n    \"category\": \"string\",\n    \"description\": \"string\",\n    \"descriptionVector\": [\n      1951.2445210445062,\n      2222.1586847564836\n    ]\n  },\n  {\n    \"id\": \"string\",\n    \"itemName\": \"string\",\n    \"category\": \"string\",\n    \"description\": \"string\",\n    \"descriptionVector\": [\n      1013.1651055765789,\n      8993.234533085495\n    ]\n  }\n]"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "delete",
+              "item": [
+                {
+                  "name": "{id}",
+                  "item": [
+                    {
+                      "name": "Delete an item",
+                      "request": {
+                        "method": "DELETE",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "*/*"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/api/wardrobe/delete/:id",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "api",
+                            "wardrobe",
+                            "delete",
+                            ":id"
+                          ],
+                          "variable": [
+                            {
+                              "key": "id",
+                              "value": "string"
+                            }
+                          ]
+                        },
+                        "description": "Removes a clothing item from the wardrobe by ID."
+                      },
+                      "response": [
+                        {
+                          "name": "OK",
+                          "originalRequest": {
+                            "method": "DELETE",
+                            "header": [
+                              {
+                                "key": "Accept",
+                                "value": "*/*"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/api/wardrobe/delete/:id",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "api",
+                                "wardrobe",
+                                "delete",
+                                ":id"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "id",
+                                  "value": "string"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "OK",
+                          "code": 200,
+                          "_postman_previewlanguage": "text",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "*/*"
+                            }
+                          ],
+                          "cookie": [],
+                          "body": "string"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ]
+}
