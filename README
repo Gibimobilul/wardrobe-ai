@@ -5,66 +5,45 @@ The Wardrobe AI agent is developed specifically to help you uncover your best fa
 
 Prerequisites:
 
-Java, Docker (with elasticsearch container installed), Python, Postman
+Java, Docker (with CouchDB container), Python, Postman
 
 Setup:
 
-1. Run the Elasticsearch container in Docker
+1. Run CouchDB in Docker
 
-2. Initialise the wardrobe index in Kibana Elasticsearch (localhost:5601):
-    a. Create index “wardrobe” with settings and mappings
+    docker run -d --name couchdb \
+      -e COUCHDB_USER=admin \
+      -e COUCHDB_PASSWORD=yourpassword \
+      -p 5984:5984 couchdb:latest
 
-PUT /wardrobe
-{
-  "settings": {
-    "index": {
-      "number_of_shards": 1,
-      "number_of_replicas": 0
-    }
-  },
-  "mappings": {
-    "properties": {
-      "item_name": { "type": "text" },
-      "category": { "type": "keyword" },
-      "description": { 
-        "type": "text",
-        "fields": {
-          "keyword": { "type": "keyword", "ignore_above": 256 }
-        }
-      },
-      "description_vector": { 
-        "type": "dense_vector", 
-        "dims": 1536, 
-        "index": true, 
-        "similarity": "cosine" 
-      }
-    }
-  }
-}
+    For a two-node failover setup, run a second instance on a different port (e.g. 5985).
 
-    b. Add demo items in bulk
+2. Create the wardrobe databases via the CouchDB dashboard (http://localhost:5984/_utils) or curl:
 
-POST /wardrobe/_bulk
-{ "index":{} }
-{ "item_name": "Navy Wool Blazer", "category": "Outerwear", "description": "Structured slim-fit blazer, formal, good for cold weather." }
-{ "index":{} }
-{ "item_name": "White Linen Shirt", "category": "Tops", "description": "Breathable, relaxed fit, perfect for summer and beach events." }
-{ "index":{} }
-{ "item_name": "Black Chinos", "category": "Bottoms", "description": "Versatile cotton pants, semi-formal, comfortable." }
-{ "index":{} }
-{ "item_name": "Floral Summer Dress", "category": "Dresses", "description": "Yellow silk with floral patterns, light and airy for outdoors." }
-{ "index":{} }
-{ "item_name": "Leather Chelsea Boots", "category": "Footwear", "description": "Brown polished leather, ankle height, formal but rugged." }
-{ "index":{} }
-{ "item_name": "Canvas Sneakers", "category": "Footwear", "description": "White minimalist sneakers, casual, great for walking." }
-{ "index":{} }
-{ "item_name": "Cashmere Turtleneck", "category": "Tops", "description": "Charcoal grey, very warm, elegant for winter evenings." }
+    curl -X PUT http://admin:yourpassword@localhost:5984/tops
+    curl -X PUT http://admin:yourpassword@localhost:5984/bottoms
+    curl -X PUT http://admin:yourpassword@localhost:5984/outerwear
+    curl -X PUT http://admin:yourpassword@localhost:5984/dresses
+    curl -X PUT http://admin:yourpassword@localhost:5984/footwear
 
-3. Open and Run the Java Application
+3. Configure application.properties (wardrobeAiBackend/demo/src/main/resources/application.properties):
 
-4. Open and Run the Python file and install python modules if IDE throws errors (streamlit, langchain_openapi, etc.)
+    couchdb.primary.url=http://localhost:5984
+    couchdb.secondary.url=http://localhost:5985
+    couchdb.databases=tops,bottoms,outerwear,dresses,footwear
+    couchdb.username=admin
+    couchdb.password=yourpassword
+    couchdb.connect-timeout-ms=3000
 
-5. Run the following streamlit command in terminal: 
+4. Open and Run the Java Application
+
+5. Set your OpenAI API key in WardrobeAgent/wardrobeAgent.py:
+
+    os.environ["OPENAI_API_KEY"] = "your-openai-api-key"
+
+6. Open and Run the Python file and install python modules if IDE throws errors (streamlit, langchain_openapi, etc.)
+
+7. Run the following streamlit command in terminal:
     streamlit run /path-to/WardrobeAgent/wardrobeAgent.py
 
-6. Enjoy your very own fashion advisor at http://localhost:8501!
+8. Enjoy your very own fashion advisor at http://localhost:8501!
