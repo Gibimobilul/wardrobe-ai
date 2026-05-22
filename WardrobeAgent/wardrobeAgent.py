@@ -1,5 +1,6 @@
 import streamlit as st
 import os
+import time
 import requests
 from langchain_openai import ChatOpenAI
 from langchain_community.agent_toolkits.openapi.planner import create_openapi_agent
@@ -21,8 +22,8 @@ If the user asks for an outfit, you must always recommend: a top item (shirt, bl
 In case you cannot find a suitable item of the 3 mandatory categories, you can search and suggest any item in that category, but specify that it is not ideal.
 Dresses or similar are top items. If you recommend a dress or similar for the top item, you must skip the bottom item.
 Always consult the wardrobe API to see what items are available before making suggestions.
-If the user wants to add an item to their wardrobe, you can use the POST /api/wardrobe/add endpoint.
-If the user wants to remove an item from their wardrobe, you can use the DELETE /api/wardrobe/delete/{id} endpoint.
+If the user wants to add an item to their wardrobe, you can use the POST /api/wardrobe/{category}/add endpoint.
+If the user wants to remove an item from their wardrobe, you can use the DELETE /api/wardrobe/{category}/{id} endpoint.
 If the user wants to see all items, you can use the GET /api/wardrobe/all endpoint.
 """
 
@@ -73,17 +74,15 @@ if user_input:
     with st.chat_message("assistant"):
         with st.spinner("Analyzing your closet..."):
             try:
-                # The agent logic:
-                # 1. Reads the user input.
-                # 2. Checks OpenAPI spec for a search tool.
-                # 3. Calls your Java GET /api/wardrobe/search.
-                # 4. Formulates a recommendation.
                 full_prompt = f"{SYSTEM_PROMPT}\n\nUser Request: {user_input}"
+                t0 = time.perf_counter()
                 result = agent_executor.invoke(full_prompt)
+                elapsed = time.perf_counter() - t0
+                print(f"[TIMING] Total answer time: {elapsed:.3f}s")
                 st.write(result["output"])
             except Exception as e:
                 st.error(f"An error occurred: {str(e)}")
 
 # Sidebar Info
 with st.sidebar:
-    st.info("This agent uses your Java Spring Boot API to fetch clothing data from Elasticsearch.")
+    st.info("This agent uses your Java Spring Boot API to fetch clothing data from CouchDB.")
