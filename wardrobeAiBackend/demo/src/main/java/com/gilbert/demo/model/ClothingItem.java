@@ -1,31 +1,27 @@
 package com.gilbert.demo.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 
-@Data // Generates getters, setters, equals, hashCode, and toString
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(indexName = "wardrobe")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ClothingItem {
 
-    @Id
+    @JsonProperty("_id")
     private String id;
 
-    @Field(type = FieldType.Text, name = "item_name")
+    @JsonProperty("_rev")
+    private String rev;
+
+    @JsonProperty("item_name")
     private String itemName;
 
-    @Field(type = FieldType.Keyword)
     private String category;
 
-    @Field(type = FieldType.Text)
     private String description;
-
-    @Field(type = FieldType.Dense_Vector, dims = 1536)
-    private float[] descriptionVector;
 }
