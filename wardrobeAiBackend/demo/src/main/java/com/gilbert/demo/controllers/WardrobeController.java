@@ -1,15 +1,12 @@
 package com.gilbert.demo.controllers;
 
 import com.gilbert.demo.model.ClothingItem;
+import com.gilbert.demo.service.CouchDBService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.elasticsearch.client.elc.NativeQuery;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.SearchHit;
-import org.springframework.data.elasticsearch.core.SearchHits;
-import org.springframework.data.elasticsearch.core.query.Query;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,42 +24,42 @@ import java.util.List;
 public class WardrobeController {
 
     @Autowired
-    private ElasticsearchOperations elasticsearchOperations;
+    private CouchDBService couchDBService;
 
     @GetMapping("/search")
-    @Operation(summary = "Search for clothing", description = "Finds items in the wardrobe based on a search term like 'formal' or 'summer'.")
-    public List<ClothingItem> search(@Parameter(description = "Description of the clothing needed") @RequestParam String query) {
-
-        // Simple match query for the demo
-        Query searchQuery = NativeQuery.builder()
-                .withQuery(q -> q.multiMatch(m -> m
-                        .fields("item_name", "description")
-                        .query(query)))
-                .build();
-
-        SearchHits<ClothingItem> hits = elasticsearchOperations.search(searchQuery, ClothingItem.class);
-        return hits.stream().map(SearchHit::getContent).toList();
-    }
-
-    @PostMapping("/add")
-    @Operation(summary = "Add a clothing item", description = "Adds a new clothing item to the wardrobe.")
-    public ClothingItem add(@RequestBody ClothingItem item) {
-        return elasticsearchOperations.save(item);
+    @Operation(summary = "Search for clothing", description = "Finds items across all categories based on a search term like 'formal' or 'summer'.")
+    public List<ClothingItem> search(
+            @Parameter(description = "Description of the clothing needed") @RequestParam String query) {
+        return couchDBService.searchAllCategories(query);
     }
 
     @GetMapping("/all")
-    @Operation(summary = "Get all items", description = "Retrieves all clothing items in the wardrobe.")
+    @Operation(summary = "Get all items", description = "Retrieves all clothing items across all categories.")
     public List<ClothingItem> getAll() {
-        Query query = NativeQuery.builder()
-                .withQuery(q -> q.matchAll(m -> m))
-                .build();
-        SearchHits<ClothingItem> hits = elasticsearchOperations.search(query, ClothingItem.class);
-        return hits.stream().map(SearchHit::getContent).toList();
+        return couchDBService.findAllCategories();
     }
 
-    @DeleteMapping("/delete/{id}")
-    @Operation(summary = "Delete an item", description = "Removes a clothing item from the wardrobe by ID.")
-    public String delete(@PathVariable String id) {
-        return elasticsearchOperations.delete(id, ClothingItem.class);
+    @GetMapping("/{category}")
+    @Operation(summary = "Get items by category", description = "Retrieves all clothing items in a specific category.")
+    public List<ClothingItem> getByCategory(@PathVariable String category) {
+        return couchDBService.findAll(category);
+    }
+
+    @PostMapping("/{category}/add")
+    @Operation(summary = "Add a clothing item", description = "Adds a new clothing item to the specified category.")
+    public ResponseEntity<?> add(@PathVariable String category, @RequestBody ClothingItem item) {
+        if (!couchDBService.getValidDatabases().contains(category)) {
+            return ResponseEntity.badRequest().body("Unknown category: " + category);
+        }
+        return ResponseEntity.ok(couchDBService.save(category, item));
+    }
+
+    @DeleteMapping("/{category}/{id}")
+    @Operation(summary = "Delete an item", description = "Removes a clothing item from its category by ID.")
+    public ResponseEntity<?> delete(@PathVariable String category, @PathVariable String id) {
+        if (!couchDBService.getValidDatabases().contains(category)) {
+            return ResponseEntity.badRequest().body("Unknown category: " + category);
+        }
+        return ResponseEntity.ok(couchDBService.delete(category, id));
     }
 }
